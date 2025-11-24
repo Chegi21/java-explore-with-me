@@ -25,6 +25,7 @@ public class BaseClient {
         return post(path, null, body);
     }
 
+    //под вопросом
     protected <T> ResponseEntity<Object> post(String path, @Nullable Map<String, Object> parameters, T body) {
         return makeAndSendRequest(HttpMethod.POST, path, parameters, body);
     }
