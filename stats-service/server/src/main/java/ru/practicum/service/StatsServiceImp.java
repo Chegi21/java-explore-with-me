@@ -27,7 +27,7 @@ public class StatsServiceImp implements StatsService {
     @Transactional(readOnly = true)
     @Override
     public List<ViewStatsDto> getViewStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-       log.info("Запрос на список статистики в промежутке от {} до {}", start, end);
+       log.info("Запрос на список статистики в промежутке от {} до {} c list {}", start, end, uris);
 
        if (start.isAfter(end)) {
            log.warn("Дата начала не может быть после даты окончания");
@@ -45,7 +45,7 @@ public class StatsServiceImp implements StatsService {
                     : repository.getListViewStats(start, end, uris);
         }
 
-        log.info("Найден список в количестве {}", list.size());
+        log.info("Найден список в количестве {} c uri {}", list.size(), list);
         return list;
     }
 
