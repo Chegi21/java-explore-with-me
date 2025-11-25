@@ -34,15 +34,19 @@ public class StatsServiceImp implements StatsService {
            throw new BadRequestException("start date is after end date");
        }
 
-       if (unique) {
-           List<ViewStatsDto> list = repository.getUniqueViewStats(start, end, uris);
-           log.info("Найден список в количестве {}", list.size());
-           return list;
-       } else {
-           List<ViewStatsDto> list = repository.getViewStats(start, end, uris);
-           log.info("Найден список в количестве {}", list.size());
-           return list;
-       }
+        List<ViewStatsDto> list;
+        if (uris == null || uris.isEmpty()) {
+            list = unique
+                    ? repository.getUniqueViewStat(start, end)
+                    : repository.getViewStat(start, end);
+        } else {
+            list = unique
+                    ? repository.getListUniqueViewStats(start, end, uris)
+                    : repository.getListViewStats(start, end, uris);
+        }
+
+        log.info("Найден список в количестве {}", list.size());
+        return list;
     }
 
     @Transactional()

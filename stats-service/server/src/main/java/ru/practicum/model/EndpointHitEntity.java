@@ -1,6 +1,7 @@
 package ru.practicum.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity()
-@Table(name = "hits")
+@Table(name = "stats")
 public class EndpointHitEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
