@@ -3,6 +3,7 @@ package ru.practicum.service.request;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResponse;
 import ru.practicum.dto.request.ParticipationRequestDto;
@@ -38,6 +39,7 @@ public class RequestServiceImp implements RequestService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ParticipationRequestDto> getRequestsByCurrentUserOfCurrentEvent(Long userId, Long eventId) {
         log.info("Запрос на информацию о запросах на участие в событие с id = {} пользователем с id = {}", eventId, userId);
@@ -67,6 +69,7 @@ public class RequestServiceImp implements RequestService {
         return participationRequestDtoList;
     }
 
+    @Transactional
     @Override
     public EventRequestStatusUpdateResponse updateRequest(Long userId, Long eventId,
                                                           EventRequestStatusUpdateRequest eventRequest) {
@@ -134,6 +137,7 @@ public class RequestServiceImp implements RequestService {
         );
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ParticipationRequestDto> getRequestsByCurrentUser(Long userId) {
         log.info("Запрос списка заявок на участие в событиях от пользователя с id = {}", userId);
@@ -152,6 +156,7 @@ public class RequestServiceImp implements RequestService {
 
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto addRequest(Long userId, Long eventId) {
         log.info("Запрос на добавление запроса на участие в событие с id = {} от пользователя с id = {}", eventId, userId);
@@ -201,6 +206,7 @@ public class RequestServiceImp implements RequestService {
         return RequestMapper.toParticipationRequestDto(createRequest);
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         log.info("Запрос на отмену запроса с id = {} на участие в событие от пользователя с id = {}", requestId, userId);

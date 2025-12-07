@@ -22,7 +22,7 @@ public class UserEntity {
     @Column(name = "name")
     String name;
 
-    public UserEntity(String email, String name) {
+    public UserEntity(String name, String email) {
         this.email = email;
         this.name = name;
     }

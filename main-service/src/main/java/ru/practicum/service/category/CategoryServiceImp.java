@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.category.NewCategoryDto;
 import ru.practicum.exception.ConflictException;
@@ -27,6 +28,7 @@ public class CategoryServiceImp implements CategoryService {
         this.eventRepository = eventRepository;
     }
 
+    @Transactional
     @Override
     public CategoryDto addCategory(NewCategoryDto dto) {
         log.info("Запрос на создание новой категории с названием {}", dto.getName());
@@ -42,6 +44,7 @@ public class CategoryServiceImp implements CategoryService {
         return CategoryMapper.toDto(createCategory);
     }
 
+    @Transactional
     @Override
     public void deleteCategory(Long categoryId) {
         log.info("Запрос на удаление категории с id = {}", categoryId);
@@ -55,6 +58,7 @@ public class CategoryServiceImp implements CategoryService {
         categoryRepository.deleteById(categoryId);
     }
 
+    @Transactional
     @Override
     public CategoryDto updateCategory(Long categoryId, NewCategoryDto newCategory) {
         log.info("Получен запрос на изменение категории с id = {} на {}", categoryId, newCategory.getName());
@@ -77,6 +81,7 @@ public class CategoryServiceImp implements CategoryService {
         return CategoryMapper.toDto(updateCategory);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CategoryDto> getCategoryList(Pageable pageable) {
         log.info("Запрос на список категорий");
@@ -87,6 +92,7 @@ public class CategoryServiceImp implements CategoryService {
         return CategoryMapper.toDtoList(entityList);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CategoryDto getCategory(Long categoryId) {
         log.info("Запрос на получение информации категории с id = {}", categoryId);

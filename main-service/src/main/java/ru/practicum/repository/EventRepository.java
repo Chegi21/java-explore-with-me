@@ -37,25 +37,26 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
     Optional<EventEntity> findByIdAndState(@Param("eventId") Long eventId,
                                            @Param("state") EventState state);
 
-    @Query(
-            value = "SELECT * FROM events e " +
-                    "WHERE " +
-                    "(:text IS NULL OR (" +
-                    "LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) OR " +
-                    "LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))" +
-                    ")) " +
-                    "AND (:categories IS NULL OR e.category_id IN (:categories)) " +
-                    "AND (:paid IS NULL OR e.paid = :paid) " +
-                    "AND (:rangeStart IS NULL OR e.event_date >= :rangeStart) " +
-                    "AND (:rangeEnd IS NULL OR e.event_date <= :rangeEnd) " +
-                    "AND (:onlyAvailable IS NULL " +
-                    "OR :onlyAvailable = false " +
-                    "OR COALESCE(e.participation_limit, 0) = 0 " +
-                    "OR COALESCE(e.confirmed_requests, 0) < COALESCE(e.participation_limit, 0) " +
-                    ")",
-            nativeQuery = true
-    )
-    Page<EventEntity> searchPublishedEvents(
+    @Query("""
+            SELECT e
+              FROM EventEntity e
+             WHERE e.state = 'PUBLISHED'
+               AND (:text IS NULL
+                    OR (LOWER(e.annotation) LIKE %:text%
+                        OR LOWER(e.description) LIKE %:text%
+                    )
+               )
+               AND (:categories IS NULL OR e.category.id IN :categories)
+               AND (:paid IS NULL OR e.paid = :paid)
+               AND e.eventDate >= COALESCE(:rangeStart, e.eventDate)
+               AND e.eventDate <= COALESCE(:rangeEnd,   e.eventDate)
+               AND (:onlyAvailable IS NULL
+                    OR :onlyAvailable = false
+                    OR COALESCE(e.participantLimit, 0) = 0
+                    OR COALESCE(e.confirmedRequests, 0) < COALESCE(e.participantLimit, 0)
+               )
+            """)
+    List<EventEntity> searchPublishedEvents(
             @Param("text") String text,
             @Param("categories") List<Long> categories,
             @Param("paid") Boolean paid,
@@ -64,6 +65,9 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
             @Param("onlyAvailable") Boolean onlyAvailable,
             Pageable pageable
     );
+
+
+
 
 
 

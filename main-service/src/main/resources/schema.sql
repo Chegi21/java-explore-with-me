@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS events (
     initiator_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     location_id BIGINT NOT NULL REFERENCES locations(id) ON DELETE CASCADE,
     paid BOOLEAN,
-    participation_limit BIGINT,
+    participant_limit BIGINT,
     published_on TIMESTAMP WITHOUT TIME ZONE,
     confirmed_requests BIGINT,
     request_moderation BOOLEAN,

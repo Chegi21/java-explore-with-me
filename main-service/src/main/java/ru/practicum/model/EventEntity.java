@@ -45,7 +45,7 @@ public class EventEntity {
     @Column(name = "paid")
     Boolean paid;
 
-    @Column(name = "participation_limit")
+    @Column(name = "participant_limit")
     Long participantLimit;
 
     @Column(name = "published_on")

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
@@ -57,6 +58,7 @@ public class EventServiceImp implements EventService {
         this.statsClient = statsClient;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> getEventsByInitiator(Long userId, Pageable pageable) {
         log.info("Запрос на список событий пользователем с id = {}", userId);
@@ -74,6 +76,7 @@ public class EventServiceImp implements EventService {
         return dtoList;
     }
 
+    @Transactional
     @Override
     public EventFullDto addEvent(Long userId, NewEventDto newEventDto) {
         log.info("Запрос на создание события от пользователя с id = {}", userId);
@@ -105,6 +108,7 @@ public class EventServiceImp implements EventService {
         return fullDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EventFullDto getEventByInitiator(Long userId, Long eventId) {
         log.info("Запрос на получение события с id = {} от пользователя с id = {}", eventId, userId);
@@ -120,6 +124,7 @@ public class EventServiceImp implements EventService {
         return fullDto;
     }
 
+    @Transactional
     @Override
     public EventFullDto updateEventByInitiator(Long userId, Long eventId, UpdateEventUserRequest newEvent) {
         log.info("Запрос на изменение события с id = {} от пользователя с id = {}", eventId, userId);
@@ -190,6 +195,7 @@ public class EventServiceImp implements EventService {
         return updateDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventFullDto> getEventsByAdmin(List<Long> userIdList, List<String> states, List<Long> categories,
                                                String rangeStart, String rangeEnd, PageRequest pageRequest) {
@@ -225,6 +231,7 @@ public class EventServiceImp implements EventService {
         return dtoList;
     }
 
+    @Transactional
     @Override
     public EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequest newEvent) {
         log.info("Запрос на обновление события с id = {}", eventId);
@@ -287,6 +294,7 @@ public class EventServiceImp implements EventService {
         return updateFullDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> getEventList(String text, List<Long> categoryIdList, Boolean paid, String rangeStart,
                                             String rangeEnd, Boolean onlyAvailable, String sort, PageRequest pageRequest,
@@ -322,8 +330,7 @@ public class EventServiceImp implements EventService {
         }
 
         List<EventEntity> entityList = eventRepository
-                .searchPublishedEvents(text, categoryIdList, paid, start, end, onlyAvailable, pageRequest)
-                .getContent();
+                .searchPublishedEvents(text, categoryIdList, paid, start, end, onlyAvailable, pageRequest);
 
         List<EventShortDto> shortDtoList = entityList.stream()
                 .map(EventMapper::toShortDto)
@@ -339,15 +346,19 @@ public class EventServiceImp implements EventService {
                 case VIEWS:
                     shortDtoList.sort(Comparator.comparing(EventShortDto::getViews));
                     break;
+
                 default:
                     throw new BadRequestException("Параметр для сортировки задан не верный");
             }
+        } else {
+            shortDtoList.sort(Comparator.comparing(EventShortDto::getId));
         }
 
         log.info("Найден список в количестве {}", shortDtoList.size());
         return shortDtoList;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EventFullDto getEvent(Long eventId, String userIp, String requestUri) {
         log.info("Запрос на событие с id = {}", eventId);

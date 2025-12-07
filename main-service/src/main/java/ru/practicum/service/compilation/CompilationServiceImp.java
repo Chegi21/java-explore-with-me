@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.compilation.CompilationDto;
@@ -45,6 +46,7 @@ public class CompilationServiceImp implements CompilationService {
         this.statsClient = statsClient;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CompilationDto> getCompilationList(Boolean pinned, Pageable pageable) {
         log.info("Запрос на список подборок (pinned = {})", pinned);
@@ -63,6 +65,7 @@ public class CompilationServiceImp implements CompilationService {
         return dtoList;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CompilationDto getCompilation(Long compilationId) {
         log.info("Запрос на подборку с id = {}", compilationId);
@@ -78,6 +81,7 @@ public class CompilationServiceImp implements CompilationService {
         return findDto;
     }
 
+    @Transactional
     @Override
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
         log.info("Запрос на создание подборки с названием {}", newCompilationDto.getTitle());
@@ -103,6 +107,7 @@ public class CompilationServiceImp implements CompilationService {
         return dto;
     }
 
+    @Transactional
     @Override
     public void deleteCompilation(Long compilationId) {
         log.info("Запрос на удаление подборки с id = {}", compilationId);
@@ -116,6 +121,7 @@ public class CompilationServiceImp implements CompilationService {
         log.info("Подборка с id = {} успешна удалена", findEntity.getId());
     }
 
+    @Transactional
     @Override
     public CompilationDto updateCompilation(Long compilationId, UpdateCompilationRequest updateCompilationRequest) {
         log.info("Запрос на обновление подборки с id = {}", compilationId);

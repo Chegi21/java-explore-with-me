@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.user.NewUserRequest;
 import ru.practicum.dto.user.UserDto;
 import ru.practicum.exception.ConflictException;
@@ -25,6 +26,7 @@ public class UserServiceImp implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<UserDto> getUserList(List<Long> idList, Pageable pageable) {
         log.info("Запрос на список пользователей c id: {}", idList);
@@ -44,6 +46,7 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Transactional
     @Override
     public UserDto addUser(NewUserRequest userDto) {
         log.info("Запрос на добавление нового пользователя");
@@ -60,6 +63,7 @@ public class UserServiceImp implements UserService {
         return createDto;
     }
 
+    @Transactional
     @Override
     public void deleteUser(Long userId) {
         log.info("Запрос на удаление пользователя с id = {}", userId);
