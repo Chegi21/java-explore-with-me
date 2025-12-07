@@ -1,0 +1,68 @@
+package ru.practicum.mapper;
+
+import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.dto.event.NewEventDto;
+import ru.practicum.enums.EventState;
+import ru.practicum.model.CategoryEntity;
+import ru.practicum.model.EventEntity;
+import ru.practicum.model.UserEntity;
+
+import java.time.LocalDateTime;
+
+public class EventMapper {
+    public static EventEntity toEntity(NewEventDto newEventDto,
+                                       CategoryEntity category,
+                                       LocalDateTime time,
+                                       UserEntity user,
+                                       EventState state) {
+       EventEntity entity = new EventEntity();
+       entity.setAnnotation(newEventDto.getAnnotation());
+       entity.setCategory(category);
+       entity.setCreatedOn(time);
+       entity.setDescription(newEventDto.getDescription());
+       entity.setEventDate(newEventDto.getEventDate());
+       entity.setInitiator(user);
+       entity.setLocationEntity(LocationMapper.toEntity(newEventDto.getLocation()));
+       entity.setPaid(newEventDto.getPaid());
+       entity.setParticipantLimit(newEventDto.getParticipantLimit());
+       entity.setConfirmedRequests(0L);
+       entity.setRequestModeration(newEventDto.getRequestModeration());
+       entity.setState(state);
+       entity.setTitle(newEventDto.getTitle());
+       return entity;
+    }
+
+    public static EventShortDto toShortDto(EventEntity entity) {
+        EventShortDto shortDto = new EventShortDto();
+        shortDto.setId(entity.getId());
+        shortDto.setAnnotation(entity.getAnnotation());
+        shortDto.setCategory(CategoryMapper.toDto(entity.getCategory()));
+        shortDto.setConfirmedRequests(entity.getConfirmedRequests());
+        shortDto.setEventDate(entity.getEventDate());
+        shortDto.setInitiator(UserMapper.toUserShortDto(entity.getInitiator()));
+        shortDto.setPaid(entity.getPaid());
+        shortDto.setTitle(entity.getTitle());
+       return shortDto;
+    }
+
+    public static EventFullDto toFullDto(EventEntity entity) {
+        EventFullDto fullDto = new EventFullDto();
+        fullDto.setId(entity.getId());
+        fullDto.setAnnotation(entity.getAnnotation());
+        fullDto.setCategory(CategoryMapper.toDto(entity.getCategory()));
+        fullDto.setConfirmedRequests(entity.getConfirmedRequests());
+        fullDto.setCreatedOn(entity.getCreatedOn());
+        fullDto.setDescription(entity.getDescription());
+        fullDto.setEventDate(entity.getEventDate());
+        fullDto.setInitiator(UserMapper.toUserShortDto(entity.getInitiator()));
+        fullDto.setLocation(LocationMapper.toDto(entity.getLocationEntity()));
+        fullDto.setPaid(entity.getPaid());
+        fullDto.setParticipantLimit(entity.getParticipantLimit());
+        fullDto.setPublishedOn(entity.getPublishedOn());
+        fullDto.setRequestModeration(entity.getRequestModeration());
+        fullDto.setState(entity.getState());
+        fullDto.setTitle(entity.getTitle());
+        return fullDto;
+    }
+}

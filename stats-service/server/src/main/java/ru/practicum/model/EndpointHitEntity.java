@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Entity()
+@Entity
 @Table(name = "stats")
 public class EndpointHitEntity {
     @Id

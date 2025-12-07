@@ -36,36 +36,36 @@ services:
       timeout: 5s
       retries: 20
 
-  ewm-db:
+  main-db:
     image: postgres:16.1
-    container_name: ewm-db
+    container_name: main-db
     volumes:
-      - ewm-db-data:/var/lib/postgresql/data
+      - main-db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=ewm
-      - POSTGRES_USER=ewm_user
+      - POSTGRES_DB=main
+      - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=12345
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "ewm_user", "-d", "ewm"]
+      test: [ "CMD", "pg_isready", "-U", "admin", "-d", "main" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  ewm-service:
+  main-service:
     build: ./main-service
-    container_name: ewm-service
+    container_name: main-service
     ports:
       - "8080:8080"
     depends_on:
-      ewm-db:
+      main-db:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - SPRING_DATASOURCE_USERNAME=ewm_user
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/main
+      - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=12345
 
 volumes:
+  main-db-data:
   stats-db-data:
-  ewm-db-data:
