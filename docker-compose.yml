@@ -65,6 +65,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=12345
+#      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=5050,server=y,suspend=n"
 
 volumes:
   ewm-db-data:

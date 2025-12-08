@@ -9,6 +9,6 @@ public class LocationMapper {
     }
 
     public static LocationDto toDto(LocationEntity entity) {
-        return new LocationDto(entity.getId(), entity.getLat(), entity.getLat());
+        return new LocationDto(entity.getLat(), entity.getLon());
     }
 }

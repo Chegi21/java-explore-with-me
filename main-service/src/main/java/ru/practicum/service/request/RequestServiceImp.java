@@ -79,14 +79,17 @@ public class RequestServiceImp implements RequestService {
                 new NotFoundException("Указанное событие не найдено"));
 
         if (!userRepository.existsById(userId)) {
+            log.warn("Пользователь с id = {} не найден", userId);
             throw new NotFoundException("Указанный пользователь не найден");
         }
 
         if (!event.getInitiator().getId().equals(userId)) {
+            log.warn("Инициатор с id = {} не соответствует пользователю с id = {}", event.getInitiator().getId(), userId);
             throw new BadRequestException("Статусы запросов может менять только инициатор");
         }
 
         if (event.getParticipantLimit() == 0 && !event.getRequestModeration()) {
+            log.warn("Модерация не требуется");
             throw new BadRequestException("Модерация не требуется");
         }
 
@@ -95,7 +98,13 @@ public class RequestServiceImp implements RequestService {
 
         List<RequestEntity> requests = requestRepository.findAllByIdIn(eventRequest.getRequestIds());
         if (requests.isEmpty()) {
+            log.warn("Список запросов пустой");
             throw new NotFoundException("Запросы не найдены");
+        }
+
+        if (confirmedCount + requests.size() > event.getParticipantLimit()) {
+            log.warn("Лимит заявок в количестве {} превышен", event.getParticipantLimit());
+            throw new ConflictException("Лимит превышен");
         }
 
         EventState newStatus = eventRequest.getStatus();
@@ -104,7 +113,8 @@ public class RequestServiceImp implements RequestService {
 
         for (RequestEntity request : requests) {
             if (!request.getEvent().getId().equals(eventId)) {
-                throw new ConflictException("Запросы должны принадлежать событию");
+                log.warn("Запрос с id = {] не соответствует событию с Id = {}", request.getId(), request.getEvent().getId());
+                throw new ConflictException("Запрос должен принадлежать событию");
             }
 
             if (!request.getStatus().equals(EventState.PENDING)) {
@@ -127,6 +137,9 @@ public class RequestServiceImp implements RequestService {
                 rejectedRequests.add(request);
             }
         }
+
+        event.setConfirmedRequests(confirmedCount);
+        eventRepository.save(event);
 
         requestRepository.saveAll(requests);
 
@@ -186,18 +199,25 @@ public class RequestServiceImp implements RequestService {
             throw new ConflictException("Событие должно иметь статусом PUBLISHED");
         }
 
-        Long confirmedRequest = requestRepository.countByEventIdAndStatus(eventId, EventState.CONFIRMED);
         Long limit = event.getParticipantLimit();
-
-        RequestEntity request = new RequestEntity(LocalDateTime.now(), event, user, EventState.PENDING);
-
-        if (limit > 0 && confirmedRequest >= limit) {
+        if (limit > 0 && limit <= requestRepository.countByEventIdAndStatus(event.getId(), EventState.CONFIRMED)) {
             log.warn("Достигнуто максимальное количество участников");
             throw new ConflictException("Достигнуто максимальное количество участников");
         }
 
-        if (limit == 0 || !event.getRequestModeration()) {
+        RequestEntity request = new RequestEntity(
+                LocalDateTime.now(),
+                event,
+                user,
+                event.getRequestModeration() ? EventState.PENDING : EventState.CONFIRMED);
+
+        if (limit == 0) {
             request.setStatus(EventState.CONFIRMED);
+        }
+
+        if (request.getStatus() == EventState.CONFIRMED) {
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            eventRepository.save(event);
         }
 
         RequestEntity createRequest = requestRepository.save(request);
@@ -216,9 +236,20 @@ public class RequestServiceImp implements RequestService {
             return new NotFoundException("Запрос не найден");
         });
 
+        if (!request.getRequester().getId().equals(userId)) {
+            log.warn("Пользователь с id = {} не соответствует инициатору события с id = {}", requestId, userId);
+            throw new BadRequestException("Отменять можно только свой запрос");
+        }
+
         if (request.getStatus() == EventState.CANCELED) {
             log.warn("Запрос с id = {} уже отменен", requestId);
             throw new ConflictException("Запрос уже отменен");
+        }
+
+        if (request.getStatus() == EventState.CONFIRMED) {
+            EventEntity event = request.getEvent();
+            event.setConfirmedRequests(event.getConfirmedRequests() - 1);
+            eventRepository.save(event);
         }
 
         request.setStatus(EventState.CANCELED);

@@ -36,13 +36,13 @@ public class EventMapper {
     public static EventShortDto toShortDto(EventEntity entity) {
         EventShortDto shortDto = new EventShortDto();
         shortDto.setId(entity.getId());
+        shortDto.setTitle(entity.getTitle());
         shortDto.setAnnotation(entity.getAnnotation());
         shortDto.setCategory(CategoryMapper.toDto(entity.getCategory()));
+        shortDto.setInitiator(UserMapper.toUserShortDto(entity.getInitiator()));
         shortDto.setConfirmedRequests(entity.getConfirmedRequests());
         shortDto.setEventDate(entity.getEventDate());
-        shortDto.setInitiator(UserMapper.toUserShortDto(entity.getInitiator()));
         shortDto.setPaid(entity.getPaid());
-        shortDto.setTitle(entity.getTitle());
        return shortDto;
     }
 
@@ -51,7 +51,6 @@ public class EventMapper {
         fullDto.setId(entity.getId());
         fullDto.setAnnotation(entity.getAnnotation());
         fullDto.setCategory(CategoryMapper.toDto(entity.getCategory()));
-        fullDto.setConfirmedRequests(entity.getConfirmedRequests());
         fullDto.setCreatedOn(entity.getCreatedOn());
         fullDto.setDescription(entity.getDescription());
         fullDto.setEventDate(entity.getEventDate());
@@ -59,9 +58,8 @@ public class EventMapper {
         fullDto.setLocation(LocationMapper.toDto(entity.getLocationEntity()));
         fullDto.setPaid(entity.getPaid());
         fullDto.setParticipantLimit(entity.getParticipantLimit());
-        fullDto.setPublishedOn(entity.getPublishedOn());
         fullDto.setRequestModeration(entity.getRequestModeration());
-        fullDto.setState(entity.getState());
+        fullDto.setState(entity.getState().name());
         fullDto.setTitle(entity.getTitle());
         return fullDto;
     }

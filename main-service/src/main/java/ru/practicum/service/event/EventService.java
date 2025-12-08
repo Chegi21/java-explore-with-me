@@ -7,21 +7,14 @@ import ru.practicum.dto.event.*;
 import java.util.List;
 
 public interface EventService {
-    // private
-    // получение событий текущего пользователя
     List<EventShortDto> getEventsByInitiator(Long userId, Pageable pageable);
 
-    // добавление нового события
     EventFullDto addEvent(Long userId, NewEventDto newEventDto);
 
-    // полная инфо о событии добавленное текущим пользователем
     EventFullDto getEventByInitiator(Long userId, Long eventId);
 
-    // изменения события добавленного текущим пользователем
     EventFullDto updateEventByInitiator(Long userId, Long eventId, UpdateEventUserRequest newEvent);
 
-    // admin
-    // поиск событий
     List<EventFullDto> getEventsByAdmin(List<Long> userIdList,
                                         List<String> states,
                                         List<Long> categories,
@@ -29,11 +22,8 @@ public interface EventService {
                                         String rangeEnd,
                                         PageRequest pageRequest);
 
-    // редактирование данных события и его статуса
     EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequest newEvent);
 
-    // public
-    // получение событий с возможностью фильтрации
     List<EventShortDto> getEventList(String text,
                                      List<Long> categoryIdList,
                                      Boolean paid,
@@ -45,6 +35,5 @@ public interface EventService {
                                      String userIp,
                                      String requestUri);
 
-    // получение подробной инфо о событии по его id
     EventFullDto getEvent(Long eventId, String userIp, String requestUri);
 }

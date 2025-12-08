@@ -38,14 +38,12 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
                                            @Param("state") EventState state);
 
     @Query("""
-            SELECT e
-              FROM EventEntity e
-             WHERE e.state = 'PUBLISHED'
+               SELECT e
+               FROM EventEntity e
+               WHERE e.state = 'PUBLISHED'
                AND (:text IS NULL
-                    OR (LOWER(e.annotation) LIKE %:text%
-                        OR LOWER(e.description) LIKE %:text%
-                    )
-               )
+                   OR (LOWER(e.annotation) LIKE %:text% OR LOWER(e.description) LIKE %:text%)
+                   )
                AND (:categories IS NULL OR e.category.id IN :categories)
                AND (:paid IS NULL OR e.paid = :paid)
                AND e.eventDate >= COALESCE(:rangeStart, e.eventDate)
@@ -54,7 +52,7 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
                     OR :onlyAvailable = false
                     OR COALESCE(e.participantLimit, 0) = 0
                     OR COALESCE(e.confirmedRequests, 0) < COALESCE(e.participantLimit, 0)
-               )
+                    )
             """)
     List<EventEntity> searchPublishedEvents(
             @Param("text") String text,
@@ -71,19 +69,21 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
 
 
 
-    @Query(
-            value = "SELECT * FROM events e " +
-                    "WHERE (:userIds IS NULL OR e.initiator_id IN (:userIds)) " +
-                    "AND (:states IS NULL OR e.state IN (:states)) " +
-                    "AND (:categories IS NULL OR e.category_id IN (:categories)) " +
-                    "AND (:rangeStart IS NULL OR e.event_date >= :rangeStart) " +
-                    "AND (:rangeEnd IS NULL OR e.event_date <= :rangeEnd)",
-            nativeQuery = true
-    )
-    Page<EventEntity> findEvents(@Param("userIds") List<Long> userIds,
-                           @Param("states") List<EventState> states,
-                           @Param("categories") List<Long> categories,
-                           @Param("rangeStart") LocalDateTime rangeStart,
-                           @Param("rangeEnd") LocalDateTime rangeEnd,
-                           Pageable pageable);
+    @Query("""
+            SELECT e
+              FROM EventEntity e
+             WHERE (:users IS NULL OR e.initiator.id IN :users)
+               AND (:states IS NULL OR e.state IN :states)
+               AND (:categories IS NULL OR e.category.id IN :categories)
+               AND e.eventDate >= COALESCE(:rangeStart, e.eventDate)
+               AND e.eventDate <= COALESCE(:rangeEnd,   e.eventDate)
+             ORDER BY e.id
+            """)
+    Page<EventEntity> findEvents(
+            @Param("users") List<Long> users,
+            @Param("states") List<EventState> states,
+            @Param("categories") List<Long> categories,
+            @Param("rangeStart") LocalDateTime rangeStart,
+            @Param("rangeEnd") LocalDateTime rangeEnd,
+            Pageable pageable);
 }

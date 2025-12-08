@@ -13,24 +13,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EventShortDto {
     Long id;
+    String title;
     String annotation;
     CategoryDto category;
-    Long confirmedRequests;
-    LocalDateTime eventDate;
     UserShortDto initiator;
     Boolean paid;
-    String title;
+    Long confirmedRequests;
     Long views;
-
-    @Override
-    public String toString() {
-        return "EventShortDto{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", annotation='" + annotation + '\'' +
-                ", confirmedRequests=" + confirmedRequests +
-                ", views=" + views +
-                '}';
-    }
+    LocalDateTime eventDate;
 }
 

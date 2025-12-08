@@ -1,5 +1,6 @@
 package ru.practicum.dto.location;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -8,7 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LocationDto {
-    Long id;
+    @NotNull(message = "Широта не должна быть null")
     Double lat;
+
+    @NotNull(message = "Долгота не должна быть null")
     Double lon;
 }

@@ -2,6 +2,7 @@ package ru.practicum.dto.request;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -10,6 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventRequestStatusUpdateResponse {
-    List<ParticipationRequestDto> confirmedRequests;
-    List<ParticipationRequestDto> rejectedRequests;
+    @Builder.Default
+    List<ParticipationRequestDto> confirmedRequests = new ArrayList<>();
+
+    @Builder.Default
+    List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
 }

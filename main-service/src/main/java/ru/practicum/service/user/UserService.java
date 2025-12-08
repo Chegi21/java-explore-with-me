@@ -7,13 +7,9 @@ import ru.practicum.dto.user.UserDto;
 import java.util.List;
 
 public interface UserService {
-    // admin
-    // получение инфо о пользователях
     List<UserDto> getUserList(List<Long> idList, Pageable pageable);
 
-    // добавление нового пользователя
     UserDto addUser(NewUserRequest newUserRequest);
 
-    // удаление пользователя
     void deleteUser(Long userId);
 }

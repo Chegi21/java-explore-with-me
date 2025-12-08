@@ -1,6 +1,6 @@
 package ru.practicum.enums;
 
-public enum EventStateAction {
+public enum StateAction {
     SEND_TO_REVIEW,
     CANCEL_REVIEW,
     REJECT_EVENT,

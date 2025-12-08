@@ -1,13 +1,18 @@
 package ru.practicum.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
-@Setter
+import java.util.List;
+
 @Getter
+@Setter
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
+    List<String> errors;
     String message;
     String reason;
     String status;

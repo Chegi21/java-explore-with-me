@@ -1,7 +1,6 @@
 package ru.practicum.dto.compilation;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -17,10 +16,9 @@ public class NewCompilationDto {
     @Size(min = 1, max = 50)
     String title;
 
-    @NotNull(message = "Список событий не может быть null")
-    @Size(min = 1, message = "Список событий должен содержать хотя бы один элемент")
     Set<Long> events;
 
+    @Builder.Default
     Boolean pinned = false;
 }
 

@@ -38,8 +38,7 @@ public class EventEntity {
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
     UserEntity initiator;
 
-    @ManyToOne()
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    @Embedded
     LocationEntity locationEntity;
 
     @Column(name = "paid")
@@ -58,6 +57,7 @@ public class EventEntity {
     Boolean requestModeration;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "state", nullable = false, length = 20)
     EventState state;
 
     @Column(name = "title")

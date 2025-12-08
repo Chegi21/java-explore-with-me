@@ -15,7 +15,6 @@ import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.enums.EventState;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.mapper.CompilationMapper;
-import ru.practicum.mapper.DateMapper;
 import ru.practicum.model.CompilationEntity;
 import ru.practicum.model.EventEntity;
 import ru.practicum.repository.CompilationRepository;
@@ -23,9 +22,7 @@ import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.RequestRepository;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -177,11 +174,16 @@ public class CompilationServiceImp implements CompilationService {
             LocalDateTime dateStr = LocalDateTime.now().minusYears(100);
             LocalDateTime dateEnd = LocalDateTime.now();
 
-            ViewStatsDto stats = (ViewStatsDto) statsClient
-                    .getStats(DateMapper.toString(dateStr), DateMapper.toString(dateEnd), uris, true)
+            List<ViewStatsDto> statsList = statsClient
+                    .getStats(dateStr, dateEnd, uris, true)
                     .getBody();
 
-            long views = stats == null ? 0L : stats.getHits();
+            long views = Optional.ofNullable(statsList)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .mapToLong(ViewStatsDto::getHits)
+                    .sum();
+
             eventDto.setViews(views);
 
             log.info("Найдено одобренных заявок в количестве {} и просмотров в количестве {}", confirmed, views);

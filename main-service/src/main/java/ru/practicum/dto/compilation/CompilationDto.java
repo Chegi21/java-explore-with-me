@@ -8,19 +8,11 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CompilationDto {
     Long id;
     Boolean pinned;
     String title;
     Set<EventShortDto> events;
-
-    public CompilationDto(Long id, Boolean pinned, String title, Set<EventShortDto> events) {
-        this.id = id;
-        this.pinned = pinned;
-        this.title = title;
-        this.events = events;
-    }
-
-    public CompilationDto() {
-    }
 }
