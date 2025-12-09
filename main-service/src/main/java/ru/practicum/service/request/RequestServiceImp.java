@@ -1,7 +1,7 @@
 package ru.practicum.service.request;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
@@ -25,12 +25,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class RequestServiceImp implements RequestService {
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+
+    @Autowired
+    public RequestServiceImp(RequestRepository requestRepository,
+                             EventRepository eventRepository,
+                             UserRepository userRepository) {
+        this.requestRepository = requestRepository;
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -52,7 +60,7 @@ public class RequestServiceImp implements RequestService {
             throw new ForbiddenException("Запросы может просматривать только инициатор события");
         }
 
-        List<RequestEntity> requestList = requestRepository.findAllByEvent_Initiator_IdAndEvent_Id(userId, eventId);
+        List<RequestEntity> requestList = requestRepository.findAllByEvent_InitiatorIdAndEvent_Id(userId, eventId);
 
         List<ParticipationRequestDto> participationRequestDtoList = requestList.stream()
                 .map(RequestMapper::toParticipationRequestDto)
@@ -86,7 +94,7 @@ public class RequestServiceImp implements RequestService {
             throw new BadRequestException("Модерация не требуется");
         }
 
-        long confirmedCount = requestRepository.countByEvent_IdAndStatus(eventId, EventState.CONFIRMED);
+        long confirmedCount = requestRepository.countByEventIdAndStatus(eventId, EventState.CONFIRMED);
         long participantLimit = event.getParticipantLimit();
 
         List<RequestEntity> requests = requestRepository.findAllByIdIn(eventRequest.getRequestIds());
@@ -106,8 +114,8 @@ public class RequestServiceImp implements RequestService {
 
         for (RequestEntity request : requests) {
             if (!request.getEvent().getId().equals(eventId)) {
-                log.warn("Заявка с id = {} не соответствует событию с Id = {}", request.getId(), request.getEvent().getId());
-                throw new ConflictException("Заявка должна принадлежать событию");
+                log.warn("Запрос с id = {] не соответствует событию с Id = {}", request.getId(), request.getEvent().getId());
+                throw new ConflictException("Запрос должен принадлежать событию");
             }
 
             if (!request.getStatus().equals(EventState.PENDING)) {
@@ -177,7 +185,7 @@ public class RequestServiceImp implements RequestService {
             return new NotFoundException("Указанное событие не найдено");
         });
 
-        if (requestRepository.existsByRequester_IdAndEvent_Id(userId, eventId)) {
+        if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
             log.warn("Запрос пользователем с id = {} уже создан", userId);
             throw new ConflictException("Запрос уже создан");
         }
@@ -193,16 +201,16 @@ public class RequestServiceImp implements RequestService {
         }
 
         Long limit = event.getParticipantLimit();
-        if (limit > 0 && limit <= requestRepository.countByEvent_IdAndStatus(event.getId(), EventState.CONFIRMED)) {
+        if (limit > 0 && limit <= requestRepository.countByEventIdAndStatus(event.getId(), EventState.CONFIRMED)) {
             log.warn("Достигнуто максимальное количество участников");
             throw new ConflictException("Достигнуто максимальное количество участников");
         }
 
-        RequestEntity request = new RequestEntity();
-        request.setCreated(LocalDateTime.now());
-        request.setEvent(event);
-        request.setRequester(user);
-        event.setState(event.getRequestModeration() ? EventState.PENDING : EventState.CONFIRMED);
+        RequestEntity request = new RequestEntity(
+                LocalDateTime.now(),
+                event,
+                user,
+                event.getRequestModeration() ? EventState.PENDING : EventState.CONFIRMED);
 
         if (limit == 0) {
             request.setStatus(EventState.CONFIRMED);
@@ -224,7 +232,7 @@ public class RequestServiceImp implements RequestService {
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         log.info("Запрос на отмену запроса с id = {} на участие в событие от пользователя с id = {}", requestId, userId);
 
-        RequestEntity request = requestRepository.findByIdAndRequester_Id(requestId, userId).orElseThrow(() -> {
+        RequestEntity request = requestRepository.findByIdAndRequesterId(requestId, userId).orElseThrow(() -> {
             log.warn("Запрос с id = {} не найден", requestId);
             return new NotFoundException("Запрос не найден");
         });

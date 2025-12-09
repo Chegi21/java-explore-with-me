@@ -1,9 +1,7 @@
 package ru.practicum.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
@@ -11,28 +9,33 @@ import java.util.Set;
 
 @Setter
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "compilations")
 public class CompilationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "pinned")
-    private Boolean pinned;
+    Boolean pinned;
 
     @Column(name = "title")
-    private String title;
+    String title;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "compilations_events",
+    @JoinTable(name = "compilations_events",
             joinColumns = @JoinColumn(name = "compilation_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
-    )
-    private Set<EventEntity> events;
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    Set<EventEntity> events;
+
+    public CompilationEntity(Boolean pinned, String title, Set<EventEntity> events) {
+        this.pinned = pinned;
+        this.title = title;
+        this.events = events;
+    }
+
+    public CompilationEntity() {
+    }
 
     @Override
     public boolean equals(Object o) {

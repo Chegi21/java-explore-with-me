@@ -1,8 +1,8 @@
 package ru.practicum.service.event;
 
 import jakarta.validation.ValidationException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class EventServiceImp implements EventService {
     private final EventRepository eventRepository;
@@ -43,13 +42,26 @@ public class EventServiceImp implements EventService {
     @Value("${app.name}")
     private String appName;
 
+    @Autowired
+    public EventServiceImp(EventRepository eventRepository,
+                           CategoryRepository categoryRepository,
+                           UserRepository userRepository,
+                           RequestRepository requestRepository,
+                           StatsClient statsClient) {
+        this.eventRepository = eventRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+        this.requestRepository = requestRepository;
+        this.statsClient = statsClient;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> getEventsByInitiator(Long userId, Pageable pageable) {
         log.info("Запрос на список событий пользователем с id = {}", userId);
 
         List<EventEntity> entityList = eventRepository
-                .findAllByInitiator_Id(userId, pageable)
+                .findAllByInitiatorId(userId, pageable)
                 .toList();
 
         List<EventShortDto> dtoList = entityList.stream()
@@ -97,7 +109,7 @@ public class EventServiceImp implements EventService {
     public EventFullDto getEventByInitiator(Long userId, Long eventId) {
         log.info("Запрос на получение события с id = {} от пользователя с id = {}", eventId, userId);
 
-        EventEntity findEntity = eventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(() -> {
+        EventEntity findEntity = eventRepository.findByIdAndInitiatorId(eventId, userId).orElseThrow(() -> {
             log.warn("Событие с id = {} для пользователя с id = {} не найдено", eventId, userId);
             return new NotFoundException("Событие не найдено");
         });
@@ -392,7 +404,7 @@ public class EventServiceImp implements EventService {
     private EventFullDto addDtoWithConfirmedRequestsAndViews(EventFullDto fullDto) {
         log.info("Запрос на добавление одобренных заявок и количество просмотров для событий {}", fullDto);
 
-        long confirmed = requestRepository.countByEvent_IdAndStatus(
+        long confirmed = requestRepository.countByEventIdAndStatus(
                 fullDto.getId(), EventState.CONFIRMED);
         fullDto.setConfirmedRequests(confirmed);
 
@@ -423,7 +435,7 @@ public class EventServiceImp implements EventService {
     private EventShortDto addDtoWithConfirmedRequestsAndViews(EventShortDto shortDto) {
         log.info("Запрос на добавление одобренных заявок и количество просмотров для событий {}", shortDto);
 
-        long confirmed = requestRepository.countByEvent_IdAndStatus(
+        long confirmed = requestRepository.countByEventIdAndStatus(
                 shortDto.getId(), EventState.CONFIRMED);
         shortDto.setConfirmedRequests(confirmed);
 

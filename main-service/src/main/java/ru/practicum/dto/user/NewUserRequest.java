@@ -13,10 +13,10 @@ import lombok.*;
 public class NewUserRequest {
     @NotBlank(message = "Имя пользователя не может быть пустым")
     @Size(min = 2, max = 250)
-    private String name;
+    String name;
 
     @NotBlank(message = "Данные почты не могут быть пустыми")
     @Email(message = "Не корректные данные почты")
     @Size(min = 6, max = 254)
-    private String email;
+    String email;
 }

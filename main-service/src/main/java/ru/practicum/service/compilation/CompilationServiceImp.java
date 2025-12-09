@@ -1,7 +1,7 @@
 package ru.practicum.service.compilation;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,23 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class CompilationServiceImp implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final StatsClient statsClient;
+
+    @Autowired
+    public CompilationServiceImp(CompilationRepository compilationRepository,
+                                 EventRepository eventRepository,
+                                 RequestRepository requestRepository,
+                                 StatsClient statsClient) {
+        this.compilationRepository = compilationRepository;
+        this.eventRepository = eventRepository;
+        this.requestRepository = requestRepository;
+        this.statsClient = statsClient;
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -76,7 +86,7 @@ public class CompilationServiceImp implements CompilationService {
         Set<EventEntity> events = new HashSet<>();
         if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
             Set<Long> eventIdList = newCompilationDto.getEvents();
-            events = eventRepository.findAllByIdIn(eventIdList);
+            events = eventRepository.findAllById(eventIdList);
         }
 
         CompilationEntity newCompilationEntity = CompilationMapper.toEntity(newCompilationDto, events);
@@ -122,7 +132,7 @@ public class CompilationServiceImp implements CompilationService {
         if (updateCompilationRequest.getEvents() != null) {
             if (!updateCompilationRequest.getEvents().isEmpty()) {
                 Set<Long> eventIdList = updateCompilationRequest.getEvents();
-                Set<EventEntity> events = eventRepository.findAllByIdIn(eventIdList);
+                Set<EventEntity> events = eventRepository.findAllById(eventIdList);
                 findEntity.setEvents(events);
             } else {
                 findEntity.setEvents(new HashSet<>());
@@ -155,7 +165,7 @@ public class CompilationServiceImp implements CompilationService {
         log.info("Запрос на добавление одобренных заявок и количество просмотров для подборки с id = {}", compilationDto.getId());
 
         for (EventShortDto eventDto : compilationDto.getEvents()) {
-            long confirmed = requestRepository.countByEvent_IdAndStatus(
+            long confirmed = requestRepository.countByEventIdAndStatus(
                     eventDto.getId(), EventState.CONFIRMED);
             eventDto.setConfirmedRequests(confirmed);
 

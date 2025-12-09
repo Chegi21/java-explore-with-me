@@ -9,9 +9,7 @@ import java.util.stream.Collectors;
 
 public class CategoryMapper {
     public static CategoryEntity toEntity(NewCategoryDto dto) {
-        CategoryEntity entity = new CategoryEntity();
-        entity.setName(dto.getName());
-        return entity;
+        return new CategoryEntity(dto.getName());
     }
 
     public static CategoryDto toDto(CategoryEntity entity) {

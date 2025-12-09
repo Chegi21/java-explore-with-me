@@ -5,12 +5,7 @@ import ru.practicum.model.EndpointHitEntity;
 
 public class StatsMapper {
     public static EndpointHitEntity toEndpointHitEntity(EndpointHitDto dto) {
-        EndpointHitEntity entity = new EndpointHitEntity();
-        entity.setApp(dto.getApp());
-        entity.setIp(dto.getIp());
-        entity.setUri(dto.getUri());
-        entity.setTimestamp(dto.getTimestamp());
-        return entity;
+        return new EndpointHitEntity(dto.getApp(), dto.getUri(), dto.getIp(), dto.getTimestamp());
     }
 
     public static EndpointHitDto toEndpointHitDto(EndpointHitEntity entity) {

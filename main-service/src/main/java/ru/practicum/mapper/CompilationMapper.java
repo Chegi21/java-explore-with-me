@@ -11,11 +11,7 @@ import java.util.stream.Collectors;
 
 public class CompilationMapper {
     public static CompilationEntity toEntity(NewCompilationDto dto, Set<EventEntity> entitySet) {
-        CompilationEntity entity = new CompilationEntity();
-        entity.setTitle(dto.getTitle());
-        entity.setPinned(dto.getPinned());
-        entity.setEvents(entitySet);
-        return entity;
+        return new CompilationEntity(dto.getPinned(), dto.getTitle(), entitySet);
     }
 
     public static CompilationDto toDto(CompilationEntity entity) {

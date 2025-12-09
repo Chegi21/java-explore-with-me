@@ -10,10 +10,7 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
     public static UserEntity toUser(NewUserRequest newUserRequest) {
-        UserEntity entity = new UserEntity();
-        entity.setName(newUserRequest.getName());
-        entity.setEmail(newUserRequest.getEmail());
-        return entity;
+        return new UserEntity(newUserRequest.getName(), newUserRequest.getEmail());
     }
 
     public static UserDto toUserDto(UserEntity user) {

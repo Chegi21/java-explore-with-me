@@ -2,29 +2,33 @@ package ru.practicum.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Setter
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "email")
-    private String email;
+    String email;
 
     @Column(name = "name")
-    private String name;
+    String name;
+
+    public UserEntity(String name, String email) {
+        this.email = email;
+        this.name = name;
+    }
+
+    public UserEntity() {
+    }
 
     @Override
     public boolean equals(Object o) {

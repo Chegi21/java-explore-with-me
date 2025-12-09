@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventShortDto {
-    private Long id;
-    private String title;
-    private String annotation;
-    private CategoryDto category;
-    private UserShortDto initiator;
-    private Boolean paid;
-    private Long confirmedRequests;
-    private Long views;
-    private LocalDateTime eventDate;
+    Long id;
+    String title;
+    String annotation;
+    CategoryDto category;
+    UserShortDto initiator;
+    Boolean paid;
+    Long confirmedRequests;
+    Long views;
+    LocalDateTime eventDate;
 }
 

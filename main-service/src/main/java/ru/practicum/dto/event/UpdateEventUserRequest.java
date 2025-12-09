@@ -15,23 +15,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UpdateEventUserRequest {
     @Size(min = 3, max = 120)
-    private String title;
+    String title;
 
     @Size(min = 20, max = 2000)
-    private String annotation;
+    String annotation;
 
     @Size(min = 20, max = 7000)
-    private String description;
+    String description;
 
     @PositiveOrZero(message = "Лимит участников должен быть положительным число")
-    private Long participantLimit;
+    Long participantLimit;
 
-    private LocalDateTime eventDate;
-    private Long category;
-    private LocationDto location;
-    private Boolean paid;
-    private Boolean requestModeration;
-    private StateAction stateAction;
+    LocalDateTime eventDate;
+    Long category;
+    LocationDto location;
+    Boolean paid;
+    Boolean requestModeration;
+    StateAction stateAction;
 
 }
 

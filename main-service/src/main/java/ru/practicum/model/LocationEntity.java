@@ -11,8 +11,8 @@ import lombok.*;
 @Embeddable
 public class LocationEntity {
     @Column(name = "lat")
-    private Double lat;
+    Double lat;
 
     @Column(name = "lon")
-    private Double lon;
+    Double lon;
 }
