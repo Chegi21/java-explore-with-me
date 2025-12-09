@@ -1,7 +1,9 @@
 package ru.practicum.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,6 +11,8 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "stats")
 public class EndpointHitEntity {
@@ -27,16 +31,6 @@ public class EndpointHitEntity {
 
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
-
-    public EndpointHitEntity(String app, String uri, String ip, LocalDateTime timestamp) {
-        this.app = app;
-        this.uri = uri;
-        this.ip = ip;
-        this.timestamp = timestamp;
-    }
-
-    public EndpointHitEntity() {
-    }
 
     @Override
     public boolean equals(Object o) {
