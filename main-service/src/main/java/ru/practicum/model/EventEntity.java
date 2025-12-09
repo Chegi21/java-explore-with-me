@@ -16,52 +16,52 @@ import java.util.Objects;
 public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "annotation")
-    String annotation;
+    private String annotation;
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
-    CategoryEntity category;
+    private CategoryEntity category;
 
     @Column(name = "created_on")
-    LocalDateTime createdOn;
+    private LocalDateTime createdOn;
 
     @Column(name = "description")
-    String description;
+    private String description;
 
     @Column(name = "event_date")
-    LocalDateTime eventDate;
+    private LocalDateTime eventDate;
 
     @ManyToOne
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
-    UserEntity initiator;
+    private UserEntity initiator;
 
     @Embedded
-    LocationEntity locationEntity;
+    private LocationEntity locationEntity;
 
     @Column(name = "paid")
-    Boolean paid;
+    private Boolean paid;
 
     @Column(name = "participant_limit")
-    Long participantLimit;
+    private Long participantLimit;
 
     @Column(name = "published_on")
-    LocalDateTime publishedOn;
+    private LocalDateTime publishedOn;
 
     @Column(name = "confirmed_requests")
-    Long confirmedRequests;
+    private Long confirmedRequests;
 
     @Column(name = "request_moderation")
-    Boolean requestModeration;
+    private Boolean requestModeration;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 20)
-    EventState state;
+    private EventState state;
 
     @Column(name = "title")
-    String title;
+    private String title;
 
     public EventEntity(String annotation,
                        CategoryEntity category,

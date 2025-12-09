@@ -13,10 +13,10 @@ import java.util.Objects;
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "name")
-    String name;
+    private String name;
 
     public CategoryEntity(String name) {
         this.name = name;

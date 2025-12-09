@@ -14,13 +14,13 @@ import java.util.Objects;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "email")
-    String email;
+    private String email;
 
     @Column(name = "name")
-    String name;
+    private String name;
 
     public UserEntity(String name, String email) {
         this.email = email;

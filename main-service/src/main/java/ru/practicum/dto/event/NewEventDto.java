@@ -17,33 +17,33 @@ import java.time.LocalDateTime;
 public class NewEventDto {
     @NotBlank(message = "Заголовок не должна быть пустой")
     @Size(min = 3, max = 120)
-    String title;
+    private String title;
 
     @NotBlank(message = "Аннотация не должна быть пустой")
     @Size(min = 20, max = 2000)
-    String annotation;
+    private String annotation;
 
     @NotBlank(message = "Описание не должно быть пустой")
     @Size(min = 20, max = 7000)
-    String description;
+    private String description;
 
     @NotNull(message = "Список категорий не должен быть пустым")
-    Long category;
+    private Long category;
 
     @NotNull(message = "Время создания события не должно быть null")
-    LocalDateTime eventDate;
+    private LocalDateTime eventDate;
 
     @NotNull(message = "Координаты не должна быть null")
-    LocationDto location;
+    private LocationDto location;
 
     @Builder.Default
-    Boolean paid = false;
+    private Boolean paid = false;
 
     @Builder.Default
     @PositiveOrZero(message = "Лимит участников должен быть положительным число")
-    Long participantLimit = 0L;
+    private Long participantLimit = 0L;
 
     @Builder.Default
-    Boolean requestModeration = true;
+    private Boolean requestModeration = true;
 }
 

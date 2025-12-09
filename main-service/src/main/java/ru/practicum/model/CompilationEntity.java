@@ -14,19 +14,19 @@ import java.util.Set;
 public class CompilationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "pinned")
-    Boolean pinned;
+    private Boolean pinned;
 
     @Column(name = "title")
-    String title;
+    private String title;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "compilations_events",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
-    Set<EventEntity> events;
+    private Set<EventEntity> events;
 
     public CompilationEntity(Boolean pinned, String title, Set<EventEntity> events) {
         this.pinned = pinned;

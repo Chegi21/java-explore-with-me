@@ -16,21 +16,21 @@ import java.util.Objects;
 public class RequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "created")
-    LocalDateTime created;
+    private LocalDateTime created;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    EventEntity event;
+    private EventEntity event;
 
     @ManyToOne
     @JoinColumn(name = "requester_id")
-    UserEntity requester;
+    private UserEntity requester;
 
     @Enumerated(EnumType.STRING)
-    EventState status;
+    private EventState status;
 
     public RequestEntity(LocalDateTime created, EventEntity event, UserEntity requester, EventState status) {
         this.created = created;
