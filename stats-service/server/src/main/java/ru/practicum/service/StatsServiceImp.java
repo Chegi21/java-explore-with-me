@@ -1,8 +1,8 @@
 package ru.practicum.service;
 
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EndpointHitDto;
@@ -15,14 +15,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class StatsServiceImp implements StatsService {
     private final StatsRepository repository;
-
-    @Autowired
-    public StatsServiceImp(StatsRepository repository) {
-        this.repository = repository;
-    }
 
     @Transactional(readOnly = true)
     @Override

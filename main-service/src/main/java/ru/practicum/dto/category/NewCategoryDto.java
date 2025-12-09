@@ -12,5 +12,5 @@ import lombok.*;
 public class NewCategoryDto {
     @NotBlank(message = "Название категории не может быть пустым")
     @Size(min = 1, max = 50)
-    String name;
+    private String name;
 }

@@ -1,7 +1,7 @@
 package ru.practicum.service.category;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,23 +17,18 @@ import ru.practicum.repository.EventRepository;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class CategoryServiceImp implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
-
-    @Autowired
-    public CategoryServiceImp(CategoryRepository categoryRepository, EventRepository eventRepository) {
-        this.categoryRepository = categoryRepository;
-        this.eventRepository = eventRepository;
-    }
 
     @Transactional
     @Override
     public CategoryDto addCategory(NewCategoryDto dto) {
         log.info("Запрос на создание новой категории с названием {}", dto.getName());
 
-        if (categoryRepository.existsByName(dto.getName())) {
+        if (categoryRepository.existsByNameIgnoreCase(dto.getName())) {
             log.warn("Категория с названием {} уже существует", dto.getName());
             throw new ConflictException("Категория уже существует");
         }
@@ -49,7 +44,7 @@ public class CategoryServiceImp implements CategoryService {
     public void deleteCategory(Long categoryId) {
         log.info("Запрос на удаление категории с id = {}", categoryId);
 
-        if (eventRepository.existsByCategoryId(categoryId)) {
+        if (eventRepository.existsByCategory(categoryId)) {
             log.warn("Удаление категория не возможно в связи с наличием связанных с ней событий");
             throw new ConflictException("Категория связанна с событиями");
         }
@@ -68,7 +63,7 @@ public class CategoryServiceImp implements CategoryService {
             return new NotFoundException("Категория не найдена");
         });
 
-        if (!findCategory.getName().equals(newCategory.getName()) && categoryRepository.existsByName(newCategory.getName())) {
+        if (!findCategory.getName().equals(newCategory.getName()) && categoryRepository.existsByNameIgnoreCase(newCategory.getName())) {
             log.warn("Категория с названием {} уже существует", newCategory.getName());
             throw new ConflictException("Категория уже существует");
         }

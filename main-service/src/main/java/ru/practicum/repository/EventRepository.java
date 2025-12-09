@@ -14,28 +14,15 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
-    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN TRUE ELSE FALSE END " +
-            "FROM EventEntity e WHERE e.category.id = :categoryId")
-    boolean existsByCategoryId(@Param("categoryId")Long categoryId);
+    boolean existsByCategory(Long category);
 
-    @Query("FROM EventEntity e WHERE e.id IN :ids")
-    Set<EventEntity> findAllById(Set<Long> ids);
+    Set<EventEntity> findAllByIdIn(Set<Long> ids);
 
-    @Query(
-            value = "SELECT e FROM EventEntity e WHERE e.initiator.id = :userId",
-            countQuery = "SELECT COUNT(e) FROM EventEntity e WHERE e.initiator.id = :userId"
-    )
-    Page<EventEntity> findAllByInitiatorId(@Param("userId") Long userId, Pageable pageable);
+    Page<EventEntity> findAllByInitiator_Id(Long userId, Pageable pageable);
 
+    Optional<EventEntity> findByIdAndInitiator_Id(Long eventId, Long userId);
 
-    @Query("SELECT e FROM EventEntity e WHERE e.id = :eventId AND e.initiator.id = :userId")
-    Optional<EventEntity> findByIdAndInitiatorId(@Param("eventId") Long eventId,
-                                                 @Param("userId") Long userId);
-
-
-    @Query("FROM EventEntity e WHERE e.id = :eventId AND e.state = :state")
-    Optional<EventEntity> findByIdAndState(@Param("eventId") Long eventId,
-                                           @Param("state") EventState state);
+    Optional<EventEntity> findByIdAndState(Long eventId, EventState state);
 
     @Query("""
                SELECT e
@@ -64,20 +51,15 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
             Pageable pageable
     );
 
-
-
-
-
-
     @Query("""
-            SELECT e
-              FROM EventEntity e
-             WHERE (:users IS NULL OR e.initiator.id IN :users)
+               SELECT e
+               FROM EventEntity e
+               WHERE (:users IS NULL OR e.initiator.id IN :users)
                AND (:states IS NULL OR e.state IN :states)
                AND (:categories IS NULL OR e.category.id IN :categories)
                AND e.eventDate >= COALESCE(:rangeStart, e.eventDate)
                AND e.eventDate <= COALESCE(:rangeEnd,   e.eventDate)
-             ORDER BY e.id
+               ORDER BY e.id
             """)
     Page<EventEntity> findEvents(
             @Param("users") List<Long> users,

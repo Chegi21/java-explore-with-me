@@ -1,29 +1,26 @@
 package ru.practicum.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "categories")
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "name")
-    String name;
-
-    public CategoryEntity(String name) {
-        this.name = name;
-    }
-
-    public CategoryEntity() {
-    }
+    private String name;
 
     @Override
     public boolean equals(Object o) {

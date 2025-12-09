@@ -2,7 +2,9 @@ package ru.practicum.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.enums.EventState;
 
@@ -11,36 +13,28 @@ import java.util.Objects;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "requests")
 public class RequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "created")
-    LocalDateTime created;
+    private LocalDateTime created;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    EventEntity event;
+    private EventEntity event;
 
     @ManyToOne
     @JoinColumn(name = "requester_id")
-    UserEntity requester;
+    private UserEntity requester;
 
     @Enumerated(EnumType.STRING)
-    EventState status;
-
-    public RequestEntity(LocalDateTime created, EventEntity event, UserEntity requester, EventState status) {
-        this.created = created;
-        this.event = event;
-        this.requester = requester;
-        this.status = status;
-    }
-
-    public RequestEntity() {
-    }
+    private EventState status;
 
     @Override
     public boolean equals(Object o) {

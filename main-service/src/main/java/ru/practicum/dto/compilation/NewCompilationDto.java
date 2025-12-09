@@ -14,11 +14,11 @@ import java.util.Set;
 public class NewCompilationDto {
     @NotBlank(message = "Название подборки не может быть пустым")
     @Size(min = 1, max = 50)
-    String title;
+    private String title;
 
-    Set<Long> events;
+    private Set<Long> events;
 
     @Builder.Default
-    Boolean pinned = false;
+    private Boolean pinned = false;
 }
 

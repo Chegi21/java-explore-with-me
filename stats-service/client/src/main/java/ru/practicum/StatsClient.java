@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class StatsClient {
-    protected final RestTemplate rest;
+    private final RestTemplate rest;
 
     public StatsClient(RestTemplate rest) {
         this.rest = rest;
