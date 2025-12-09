@@ -9,6 +9,7 @@ import ru.practicum.dto.request.EventRequestStatusUpdateResponse;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.enums.EventState;
 import ru.practicum.exception.ConflictException;
+import ru.practicum.exception.ForbiddenException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.mapper.RequestMapper;
@@ -56,7 +57,7 @@ public class RequestServiceImp implements RequestService {
 
         if (!event.getInitiator().getId().equals(user.getId())) {
             log.warn("Запросы может просматривать только инициатор события");
-            throw new BadRequestException("Запросы может просматривать только инициатор события");
+            throw new ForbiddenException("Запросы может просматривать только инициатор события");
         }
 
         List<RequestEntity> requestList = requestRepository.findAllByEvent_InitiatorIdAndEvent_Id(userId, eventId);
@@ -85,7 +86,7 @@ public class RequestServiceImp implements RequestService {
 
         if (!event.getInitiator().getId().equals(userId)) {
             log.warn("Инициатор с id = {} не соответствует пользователю с id = {}", event.getInitiator().getId(), userId);
-            throw new BadRequestException("Статусы запросов может менять только инициатор");
+            throw new ForbiddenException("Статусы запросов может менять только инициатор");
         }
 
         if (event.getParticipantLimit() == 0 && !event.getRequestModeration()) {
@@ -238,7 +239,7 @@ public class RequestServiceImp implements RequestService {
 
         if (!request.getRequester().getId().equals(userId)) {
             log.warn("Пользователь с id = {} не соответствует инициатору события с id = {}", requestId, userId);
-            throw new BadRequestException("Отменять можно только свой запрос");
+            throw new ForbiddenException("Отменять можно только свой запрос");
         }
 
         if (request.getStatus() == EventState.CANCELED) {
