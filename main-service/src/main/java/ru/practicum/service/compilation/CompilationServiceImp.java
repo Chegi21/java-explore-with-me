@@ -86,7 +86,7 @@ public class CompilationServiceImp implements CompilationService {
         Set<EventEntity> events = new HashSet<>();
         if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
             Set<Long> eventIdList = newCompilationDto.getEvents();
-            events = eventRepository.findAllById(eventIdList);
+            events = eventRepository.findAllByIdIn(eventIdList);
         }
 
         CompilationEntity newCompilationEntity = CompilationMapper.toEntity(newCompilationDto, events);
@@ -132,7 +132,7 @@ public class CompilationServiceImp implements CompilationService {
         if (updateCompilationRequest.getEvents() != null) {
             if (!updateCompilationRequest.getEvents().isEmpty()) {
                 Set<Long> eventIdList = updateCompilationRequest.getEvents();
-                Set<EventEntity> events = eventRepository.findAllById(eventIdList);
+                Set<EventEntity> events = eventRepository.findAllByIdIn(eventIdList);
                 findEntity.setEvents(events);
             } else {
                 findEntity.setEvents(new HashSet<>());
@@ -165,7 +165,7 @@ public class CompilationServiceImp implements CompilationService {
         log.info("Запрос на добавление одобренных заявок и количество просмотров для подборки с id = {}", compilationDto.getId());
 
         for (EventShortDto eventDto : compilationDto.getEvents()) {
-            long confirmed = requestRepository.countByEventIdAndStatus(
+            long confirmed = requestRepository.countByEvent_IdAndStatus(
                     eventDto.getId(), EventState.CONFIRMED);
             eventDto.setConfirmedRequests(confirmed);
 

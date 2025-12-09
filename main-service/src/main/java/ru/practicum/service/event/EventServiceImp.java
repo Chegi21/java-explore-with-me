@@ -61,7 +61,7 @@ public class EventServiceImp implements EventService {
         log.info("Запрос на список событий пользователем с id = {}", userId);
 
         List<EventEntity> entityList = eventRepository
-                .findAllByInitiatorId(userId, pageable)
+                .findAllByInitiator_Id(userId, pageable)
                 .toList();
 
         List<EventShortDto> dtoList = entityList.stream()
@@ -109,7 +109,7 @@ public class EventServiceImp implements EventService {
     public EventFullDto getEventByInitiator(Long userId, Long eventId) {
         log.info("Запрос на получение события с id = {} от пользователя с id = {}", eventId, userId);
 
-        EventEntity findEntity = eventRepository.findByIdAndInitiatorId(eventId, userId).orElseThrow(() -> {
+        EventEntity findEntity = eventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(() -> {
             log.warn("Событие с id = {} для пользователя с id = {} не найдено", eventId, userId);
             return new NotFoundException("Событие не найдено");
         });
@@ -405,7 +405,7 @@ public class EventServiceImp implements EventService {
     private EventFullDto addDtoWithConfirmedRequestsAndViews(EventFullDto fullDto) {
         log.info("Запрос на добавление одобренных заявок и количество просмотров для событий {}", fullDto);
 
-        long confirmed = requestRepository.countByEventIdAndStatus(
+        long confirmed = requestRepository.countByEvent_IdAndStatus(
                 fullDto.getId(), EventState.CONFIRMED);
         fullDto.setConfirmedRequests(confirmed);
 
@@ -436,7 +436,7 @@ public class EventServiceImp implements EventService {
     private EventShortDto addDtoWithConfirmedRequestsAndViews(EventShortDto shortDto) {
         log.info("Запрос на добавление одобренных заявок и количество просмотров для событий {}", shortDto);
 
-        long confirmed = requestRepository.countByEventIdAndStatus(
+        long confirmed = requestRepository.countByEvent_IdAndStatus(
                 shortDto.getId(), EventState.CONFIRMED);
         shortDto.setConfirmedRequests(confirmed);
 

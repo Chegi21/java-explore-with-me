@@ -60,7 +60,7 @@ public class RequestServiceImp implements RequestService {
             throw new ForbiddenException("Запросы может просматривать только инициатор события");
         }
 
-        List<RequestEntity> requestList = requestRepository.findAllByEvent_InitiatorIdAndEvent_Id(userId, eventId);
+        List<RequestEntity> requestList = requestRepository.findAllByEvent_Initiator_IdAndEvent_Id(userId, eventId);
 
         List<ParticipationRequestDto> participationRequestDtoList = requestList.stream()
                 .map(RequestMapper::toParticipationRequestDto)
@@ -94,7 +94,7 @@ public class RequestServiceImp implements RequestService {
             throw new BadRequestException("Модерация не требуется");
         }
 
-        long confirmedCount = requestRepository.countByEventIdAndStatus(eventId, EventState.CONFIRMED);
+        long confirmedCount = requestRepository.countByEvent_IdAndStatus(eventId, EventState.CONFIRMED);
         long participantLimit = event.getParticipantLimit();
 
         List<RequestEntity> requests = requestRepository.findAllByIdIn(eventRequest.getRequestIds());
@@ -185,7 +185,7 @@ public class RequestServiceImp implements RequestService {
             return new NotFoundException("Указанное событие не найдено");
         });
 
-        if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
+        if (requestRepository.existsByRequester_IdAndEvent_Id(userId, eventId)) {
             log.warn("Запрос пользователем с id = {} уже создан", userId);
             throw new ConflictException("Запрос уже создан");
         }
@@ -201,7 +201,7 @@ public class RequestServiceImp implements RequestService {
         }
 
         Long limit = event.getParticipantLimit();
-        if (limit > 0 && limit <= requestRepository.countByEventIdAndStatus(event.getId(), EventState.CONFIRMED)) {
+        if (limit > 0 && limit <= requestRepository.countByEvent_IdAndStatus(event.getId(), EventState.CONFIRMED)) {
             log.warn("Достигнуто максимальное количество участников");
             throw new ConflictException("Достигнуто максимальное количество участников");
         }
@@ -232,7 +232,7 @@ public class RequestServiceImp implements RequestService {
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         log.info("Запрос на отмену запроса с id = {} на участие в событие от пользователя с id = {}", requestId, userId);
 
-        RequestEntity request = requestRepository.findByIdAndRequesterId(requestId, userId).orElseThrow(() -> {
+        RequestEntity request = requestRepository.findByIdAndRequester_Id(requestId, userId).orElseThrow(() -> {
             log.warn("Запрос с id = {} не найден", requestId);
             return new NotFoundException("Запрос не найден");
         });
