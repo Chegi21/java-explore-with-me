@@ -2,7 +2,9 @@ package ru.practicum.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.enums.EventState;
 
@@ -11,6 +13,8 @@ import java.util.Objects;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "requests")
 public class RequestEntity {
@@ -31,16 +35,6 @@ public class RequestEntity {
 
     @Enumerated(EnumType.STRING)
     private EventState status;
-
-    public RequestEntity(LocalDateTime created, EventEntity event, UserEntity requester, EventState status) {
-        this.created = created;
-        this.event = event;
-        this.requester = requester;
-        this.status = status;
-    }
-
-    public RequestEntity() {
-    }
 
     @Override
     public boolean equals(Object o) {

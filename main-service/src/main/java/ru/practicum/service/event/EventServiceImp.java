@@ -176,10 +176,11 @@ public class EventServiceImp implements EventService {
         }
 
         if (newEvent.getLocation() != null) {
-            oldEvent.setLocationEntity(LocationEntity.builder()
-                    .lon(newEvent.getLocation().getLon())
-                    .lat(newEvent.getLocation().getLat())
-                    .build());
+            LocationEntity location = new LocationEntity();
+            location.setLon(newEvent.getLocation().getLon());
+            location.setLat(newEvent.getLocation().getLat());
+
+            oldEvent.setLocationEntity(location);
         }
 
         EventEntity updateEntity = eventRepository.save(oldEvent);

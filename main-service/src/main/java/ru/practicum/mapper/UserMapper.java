@@ -9,19 +9,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserMapper {
-    public static UserEntity toUser(NewUserRequest newUserRequest) {
-        return new UserEntity(newUserRequest.getName(), newUserRequest.getEmail());
+    public static UserEntity toEntity(NewUserRequest newUserRequest) {
+        UserEntity entity = new UserEntity();
+        entity.setName(newUserRequest.getName());
+        entity.setEmail(newUserRequest.getEmail());
+        return entity;
     }
 
-    public static UserDto toUserDto(UserEntity user) {
+    public static UserDto toDto(UserEntity user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 
-    public static UserShortDto toUserShortDto(UserEntity user) {
+    public static UserShortDto toShortDto(UserEntity user) {
         return new UserShortDto(user.getId(), user.getName());
     }
 
     public static List<UserDto> toListDto(List<UserEntity> entityList) {
-        return entityList.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return entityList.stream().map(UserMapper::toDto).collect(Collectors.toList());
     }
 }

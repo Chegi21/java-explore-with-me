@@ -206,11 +206,11 @@ public class RequestServiceImp implements RequestService {
             throw new ConflictException("Достигнуто максимальное количество участников");
         }
 
-        RequestEntity request = new RequestEntity(
-                LocalDateTime.now(),
-                event,
-                user,
-                event.getRequestModeration() ? EventState.PENDING : EventState.CONFIRMED);
+        RequestEntity request = new RequestEntity();
+        request.setCreated(LocalDateTime.now());
+        request.setEvent(event);
+        request.setRequester(user);
+        request.setStatus(event.getRequestModeration() ? EventState.PENDING : EventState.CONFIRMED);
 
         if (limit == 0) {
             request.setStatus(EventState.CONFIRMED);

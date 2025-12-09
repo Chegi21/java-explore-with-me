@@ -2,7 +2,9 @@ package ru.practicum.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.enums.EventState;
 
@@ -11,6 +13,8 @@ import java.util.Objects;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "events")
 public class EventEntity {
@@ -62,39 +66,6 @@ public class EventEntity {
 
     @Column(name = "title")
     private String title;
-
-    public EventEntity(String annotation,
-                       CategoryEntity category,
-                       LocalDateTime createdOn,
-                       String description,
-                       LocalDateTime eventDate,
-                       UserEntity initiator,
-                       LocationEntity locationEntity,
-                       Boolean paid,
-                       Long participantLimit,
-                       LocalDateTime publishedOn,
-                       Long confirmedRequests,
-                       Boolean requestModeration,
-                       EventState state,
-                       String title) {
-        this.annotation = annotation;
-        this.category = category;
-        this.createdOn = createdOn;
-        this.description = description;
-        this.eventDate = eventDate;
-        this.initiator = initiator;
-        this.locationEntity = locationEntity;
-        this.paid = paid;
-        this.participantLimit = participantLimit;
-        this.publishedOn = publishedOn;
-        this.confirmedRequests = confirmedRequests;
-        this.requestModeration = requestModeration;
-        this.state = state;
-        this.title = title;
-    }
-
-    public EventEntity() {
-    }
 
     @Override
     public boolean equals(Object o) {

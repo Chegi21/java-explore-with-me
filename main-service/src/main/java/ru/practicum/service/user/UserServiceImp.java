@@ -56,8 +56,8 @@ public class UserServiceImp implements UserService {
             throw new ConflictException("Пользователь с таким именем уже существует");
         }
 
-        UserEntity entity = UserMapper.toUser(userDto);
-        UserDto createDto = UserMapper.toUserDto(userRepository.save(entity));
+        UserEntity entity = UserMapper.toEntity(userDto);
+        UserDto createDto = UserMapper.toDto(userRepository.save(entity));
 
         log.info("Пользователь с id = {} успешно создан", createDto.getId());
         return createDto;

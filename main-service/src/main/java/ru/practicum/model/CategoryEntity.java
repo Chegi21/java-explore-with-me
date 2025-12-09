@@ -1,13 +1,17 @@
 package ru.practicum.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "categories")
 public class CategoryEntity {
@@ -17,13 +21,6 @@ public class CategoryEntity {
 
     @Column(name = "name")
     private String name;
-
-    public CategoryEntity(String name) {
-        this.name = name;
-    }
-
-    public CategoryEntity() {
-    }
 
     @Override
     public boolean equals(Object o) {
