@@ -1,24 +1,24 @@
 package ru.practicum.exception;
 
-
+import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+
 
 @RestControllerAdvice
 public class ErrorHandler {
-    private static final DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+
         List<String> errors = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -30,7 +30,7 @@ public class ErrorHandler {
                 .message("Ошибка валидации параметров")
                 .reason("Неверные данные запроса")
                 .status(HttpStatus.BAD_REQUEST.toString())
-                .timestamp(LocalDateTime.now().format(pattern))
+                .timestamp(LocalDateTime.now().toString())
                 .build();
 
         return ResponseEntity
@@ -38,27 +38,110 @@ public class ErrorHandler {
                 .body(errorDto);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError badRequest(final BadRequestException e) {
-        List<String> errors = new ArrayList<>();
-        return new ApiError(errors,e.getMessage(), "Некорректный запрос",
-                HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(pattern));
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
+
+        ApiError errorDto = ApiError.builder()
+                .message("Ошибка валидации параметров")
+                .reason("Неверные данные запроса")
+                .status(HttpStatus.BAD_REQUEST.name())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ApiError notFound(final NotFoundException e) {
-        List<String> errors = new ArrayList<>();
-        return new ApiError(errors, e.getMessage(), "Объект не найден",
-                HttpStatus.NOT_FOUND.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(pattern));
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleValidation(ValidationException e) {
+
+        ApiError errorDto = ApiError.builder()
+                .message("Ошибка валидации параметров")
+                .reason(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.name())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ApiError alreadyExists(final ConflictException e) {
-        List<String> errors = new ArrayList<>();
-        return new ApiError(errors, e.getMessage(), "Конфликт данных",
-                HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(pattern));
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUnexpected(Exception e) {
+
+        ApiError errorDto = ApiError.builder()
+                .message("НЕПРЕДВИДЕННАЯ ОШИБКА")
+                .reason("а пёс его знает...")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFound(NotFoundException e) {
+
+        ApiError errorDto = ApiError.builder()
+                .message(e.getMessage())
+                .reason("Либо не нашли, либо неверно указан запрос")
+                .status(HttpStatus.NOT_FOUND.name())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorDto);
+
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Object> handleConflict(ConflictException e) {
+
+        ApiError errorDto = ApiError.builder()
+                .message(e.getMessage())
+                .reason("Пересекается с другими данными")
+                .status(HttpStatus.CONFLICT.name())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(errorDto);
+
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Object> handleForbidden(ForbiddenException e) {
+
+        ApiError errorDto = ApiError.builder()
+                .message(e.getMessage())
+                .reason("Запрещено трогать чужое")
+                .status(HttpStatus.FORBIDDEN.name())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException e) {
+
+        ApiError errorDto = ApiError.builder()
+                .message(e.getMessage())
+                .reason("Отсутствуют обязательные параметры запроса")
+                .status(HttpStatus.BAD_REQUEST.name())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
     }
 }

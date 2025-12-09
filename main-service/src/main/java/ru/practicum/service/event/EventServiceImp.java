@@ -17,7 +17,6 @@ import ru.practicum.enums.StateAction;
 import ru.practicum.enums.SortValue;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.BadRequestException;
 import ru.practicum.mapper.DateMapper;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.model.CategoryEntity;
@@ -92,7 +91,7 @@ public class EventServiceImp implements EventService {
         LocalDateTime now = LocalDateTime.now();
         if (newEventDto.getEventDate().minusHours(2).isBefore(now)) {
             log.warn("Дата и время события не могут быть раньше, чем через два часа от текущего момента");
-            throw new BadRequestException("Дата и время события не могут быть раньше, чем через два часа от текущего момента");
+            throw new ValidationException("Дата и время события не могут быть раньше, чем через два часа от текущего момента");
         }
 
         EventEntity createEntity = EventMapper.toEntity(newEventDto, findCategory, now, findUser, EventState.PENDING);
@@ -139,7 +138,7 @@ public class EventServiceImp implements EventService {
         if (newEvent.getEventDate() != null) {
             if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
                 log.warn("Дата и время события не могут быть раньше, чем через два часа от текущего момента");
-                throw new BadRequestException(
+                throw new ValidationException(
                         "Дата и время события не могут быть раньше, чем через два часа от текущего момента"
                 );
             }
@@ -203,7 +202,7 @@ public class EventServiceImp implements EventService {
                 ? null : DateMapper.toLocalDateTime(rangeEnd);
 
         if (start != null && end != null && !start.isBefore(end)) {
-            throw new BadRequestException("Дата старта фильтра должна быть раньше даты окончания фильтра");
+            throw new ValidationException("Дата старта фильтра должна быть раньше даты окончания фильтра");
         }
 
         List<EventState> eventStates = null;
@@ -246,7 +245,7 @@ public class EventServiceImp implements EventService {
         if (newEvent.getEventDate() != null) {
             if (newEvent.getEventDate().isBefore(LocalDateTime.now())) {
                 log.warn("Дата события не может быть в прошлом");
-                throw new BadRequestException("Дата события не может быть в прошлом");
+                throw new ValidationException("Дата события не может быть в прошлом");
             }
         }
 
@@ -319,7 +318,7 @@ public class EventServiceImp implements EventService {
 
         if (!start.isBefore(end)) {
             log.warn("Дата старта фильтра должна быть раньше даты окончания фильтра");
-            throw new BadRequestException("Дата старта фильтра должна быть раньше даты окончания фильтра");
+            throw new ValidationException("Дата старта фильтра должна быть раньше даты окончания фильтра");
         }
 
         EndpointHitDto hitDto = EndpointHitDto.builder()
@@ -361,7 +360,7 @@ public class EventServiceImp implements EventService {
                     break;
 
                 default:
-                    throw new BadRequestException("Параметр для сортировки задан не верный");
+                    throw new ValidationException("Параметр для сортировки задан не верный");
             }
         } else {
             shortDtoList.sort(Comparator.comparing(EventShortDto::getId));
