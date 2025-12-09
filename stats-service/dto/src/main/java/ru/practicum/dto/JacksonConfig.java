@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 @Configuration(value = "stateJacksonConfig")
 public class JacksonConfig {
@@ -16,6 +17,7 @@ public class JacksonConfig {
     public Jackson2ObjectMapperBuilderCustomizer dtoJsonCustomizer() {
         return builder -> builder
                 .serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(PATTERN)))
-                .deserializers(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(PATTERN)));
+                .deserializers(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(PATTERN)))
+                .timeZone(TimeZone.getTimeZone("UTC"));
     }
 }
