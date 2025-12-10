@@ -1,12 +1,12 @@
 package ru.practicum.service;
 
+import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
-import ru.practicum.exeption.BadRequestException;
 import ru.practicum.mapper.StatsMapper;
 import ru.practicum.model.EndpointHitEntity;
 import ru.practicum.repository.StatsRepository;
@@ -16,13 +16,10 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StatsServiceImp implements StatsService {
-    private final StatsRepository repository;
 
-    @Autowired
-    public StatsServiceImp(StatsRepository repository) {
-        this.repository = repository;
-    }
+    private final StatsRepository repository;
 
     @Transactional(readOnly = true)
     @Override
@@ -31,7 +28,7 @@ public class StatsServiceImp implements StatsService {
 
        if (start.isAfter(end)) {
            log.warn("Дата начала не может быть после даты окончания");
-           throw new BadRequestException("start date is after end date");
+           throw new ValidationException("Дата начала не может быть после даты окончания");
        }
 
         List<ViewStatsDto> list;

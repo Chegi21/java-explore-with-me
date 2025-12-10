@@ -45,10 +45,10 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_DB=ewm
-      - POSTGRES_USER=ewm_user
+      - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=12345
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "ewm_user", "-d", "ewm"]
+      test: [ "CMD", "pg_isready", "-U", "admin", "-d", "ewm" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -63,9 +63,10 @@ services:
         condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - SPRING_DATASOURCE_USERNAME=ewm_user
+      - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=12345
+#      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=5050,server=y,suspend=n"
 
 volumes:
-  stats-db-data:
   ewm-db-data:
+  stats-db-data:
