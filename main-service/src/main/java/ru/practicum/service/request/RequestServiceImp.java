@@ -1,7 +1,7 @@
 package ru.practicum.service.request;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
@@ -26,19 +26,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RequestServiceImp implements RequestService {
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public RequestServiceImp(RequestRepository requestRepository,
-                             EventRepository eventRepository,
-                             UserRepository userRepository) {
-        this.requestRepository = requestRepository;
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-    }
 
     @Transactional(readOnly = true)
     @Override

@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.comment.CommentFullDto;
 import ru.practicum.dto.comment.CommentShortDto;
 import ru.practicum.service.comment.CommentService;
 

@@ -1,5 +1,6 @@
 package ru.practicum.service.comment;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CommentServiceImp implements CommentService{
+public class CommentServiceImp implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
@@ -149,7 +150,7 @@ public class CommentServiceImp implements CommentService{
 
         if (!findComment.getAuthor().equals(findUser)) {
             log.warn("Пользователь с id = {} не является автором комментария", userId);
-            throw new BadRequestException("Пользователь не является автором комментария");
+            throw new ValidationException("Пользователь не является автором комментария");
         }
 
         commentRepository.delete(findComment);

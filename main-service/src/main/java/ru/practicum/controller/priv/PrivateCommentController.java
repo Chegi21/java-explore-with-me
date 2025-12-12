@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping(path = "/comments")
 @RequiredArgsConstructor
 @Validated
-public class CommentPrivateController {
+public class PrivateCommentController {
     private final CommentService commentService;
 
     @PostMapping("/users/{userId}/events/{eventId}")

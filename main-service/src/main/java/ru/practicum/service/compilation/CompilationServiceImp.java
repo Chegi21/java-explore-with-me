@@ -1,7 +1,7 @@
 package ru.practicum.service.compilation;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,22 +26,12 @@ import java.util.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CompilationServiceImp implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final StatsClient statsClient;
-
-    @Autowired
-    public CompilationServiceImp(CompilationRepository compilationRepository,
-                                 EventRepository eventRepository,
-                                 RequestRepository requestRepository,
-                                 StatsClient statsClient) {
-        this.compilationRepository = compilationRepository;
-        this.eventRepository = eventRepository;
-        this.requestRepository = requestRepository;
-        this.statsClient = statsClient;
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -159,7 +149,6 @@ public class CompilationServiceImp implements CompilationService {
         log.info("Подборка с id = {} успешно обновлена", dto.getId());
         return dto;
     }
-
 
     private CompilationDto addConfirmedRequestsAndViews(CompilationDto compilationDto) {
         log.info("Запрос на добавление одобренных заявок и количество просмотров для подборки с id = {}", compilationDto.getId());
