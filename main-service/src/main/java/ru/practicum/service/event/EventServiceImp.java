@@ -1,8 +1,8 @@
 package ru.practicum.service.event;
 
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EventServiceImp implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
@@ -41,19 +42,6 @@ public class EventServiceImp implements EventService {
     private final StatsClient statsClient;
     @Value("${app.name}")
     private String appName;
-
-    @Autowired
-    public EventServiceImp(EventRepository eventRepository,
-                           CategoryRepository categoryRepository,
-                           UserRepository userRepository,
-                           RequestRepository requestRepository,
-                           StatsClient statsClient) {
-        this.eventRepository = eventRepository;
-        this.categoryRepository = categoryRepository;
-        this.userRepository = userRepository;
-        this.requestRepository = requestRepository;
-        this.statsClient = statsClient;
-    }
 
     @Transactional(readOnly = true)
     @Override
